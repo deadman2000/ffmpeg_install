@@ -58,7 +58,7 @@ wget -O fdk-aac.zip https://github.com/mstorsjo/fdk-aac/zipball/master
 unzip fdk-aac.zip
 cd mstorsjo-fdk-aac*
 autoreconf -fiv
-./configure --prefix=/usr/lib/aarch64-linux-gnu/
+./configure --libdir=/usr/lib/aarch64-linux-gnu/
 make -j$(nproc)
 sudo make -j$(nproc) install
 make -j$(nproc) distclean
