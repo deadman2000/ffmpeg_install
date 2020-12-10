@@ -7,7 +7,7 @@
 installLibs(){
 echo "Installing prerequisites"
 sudo apt-get update
-sudo apt-get -y --force-yes install autoconf automake build-essential libass-dev libfreetype6-dev libgpac-dev \
+sudo apt-get -y --allow install autoconf automake build-essential libass-dev libfreetype6-dev libgpac-dev \
   libsdl1.2-dev libtheora-dev libtool libva-dev libvdpau-dev libvorbis-dev libxcb1-dev libxcb-shm0-dev \
   libxcb-xfixes0-dev pkg-config texi2html zlib1g-dev
 }
@@ -58,9 +58,9 @@ wget -O fdk-aac.zip https://github.com/mstorsjo/fdk-aac/zipball/master
 unzip fdk-aac.zip
 cd mstorsjo-fdk-aac*
 autoreconf -fiv
-./configure --prefix="$HOME/ffmpeg_build" --disable-shared
+./configure --prefix=/usr/lib/aarch64-linux-gnu/
 make -j$(nproc)
-make -j$(nproc) install
+sudo make -j$(nproc) install
 make -j$(nproc) distclean
 }
 
@@ -71,6 +71,9 @@ cd ~/ffmpeg_sources
 git clone https://github.com/FFmpeg/FFmpeg -b master
 cd FFmpeg
 PATH="$HOME/bin:$PATH" PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" ./configure \
+  --extra-cflags="-I$HOME/ffmpeg_build/include" \
+  --extra-ldflags="-L$HOME/ffmpeg_build/lib" \
+  --libdir=/usr/lib/aarch64-linux-gnu/ \
   --enable-cuda-nvcc \
   --enable-cuvid \
   --enable-libnpp \
@@ -84,7 +87,8 @@ PATH="$HOME/bin:$PATH" PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" ./conf
   --enable-libtheora \
   --enable-libvorbis \
   --enable-nonfree \
-  --enable-nvenc
+  --enable-nvenc \
+  --enable-shared
 PATH="$HOME/bin:$PATH" make -j$(nproc)
 sudo make -j$(nproc) install
 make -j$(nproc) distclean
